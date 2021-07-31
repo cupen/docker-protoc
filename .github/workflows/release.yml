@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - 'master'
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "tag of docker image"
+        required: false 
+        default: "latest"
 
 jobs:
   docker:
@@ -24,4 +30,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: cupen/protoc:latest
+          tags: cupen/protoc:${{ github.event.inputs.image_tag }}
