@@ -11,7 +11,7 @@ on:
         default: "latest"
 
 jobs:
-  docker:
+  publish-dockerhub:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,8 +26,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push(git push)
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: cupen/protoc:latest
+        if: github.event_name == 'push'
+
+      - name: Build and push(munual)
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: cupen/protoc:${{ github.event.inputs.image_tag }}
+        if: github.event_name == 'workflow_dispatch'
