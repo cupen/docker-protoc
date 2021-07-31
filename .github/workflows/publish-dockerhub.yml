@@ -1,4 +1,4 @@
-name: release
+name: publish-dockerhub
 on:
   push:
     branches:
@@ -33,7 +33,7 @@ jobs:
           tags: cupen/protoc:latest
         if: github.event_name == 'push'
 
-      - name: Build and push(munual)
+      - name: Build and push(manual)
         uses: docker/build-push-action@v2
         with:
           push: true
