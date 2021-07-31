@@ -14,7 +14,7 @@ RUN cd /protoc_bin/ && unzip protoc.zip && rm protoc.zip
 RUN export GOPROXY=${goproxy} \
     export GOPATH=/gopath/ \
     && mkdir /gopath/ \
-    && go get github.com/gogo/protobuf/protoc-gen-gogoslick@v1.2.1 \
+    && go get github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2 \
     && go get github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograin@dev \
     && go get github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograinv2@dev
 
