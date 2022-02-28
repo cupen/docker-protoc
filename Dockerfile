@@ -1,4 +1,4 @@
-FROM golang:1.16.6-buster AS build
+FROM golang:1.17.7-buster AS build
 
 ARG protoc_version=3.17.3
 ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
@@ -14,9 +14,9 @@ RUN cd /protoc_bin/ && unzip protoc.zip && rm protoc.zip
 RUN export GOPROXY=${goproxy} \
     export GOPATH=/gopath/ \
     && mkdir /gopath/ \
-    && go get github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2 \
-    && go get github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograin@dev \
-    && go get github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograinv2@dev
+    && go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2 \
+    && go install github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograin@dev \
+    && go install github.com/AsynkronIT/protoactor-go/protobuf/protoc-gen-gograinv2@dev
 
 
 FROM debian:buster-slim AS runtime
