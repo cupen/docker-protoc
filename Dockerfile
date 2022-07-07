@@ -4,6 +4,17 @@ ARG protoc_version=3.17.3
 ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
 ARG goproxy=direct
 
+
+# install go code generator(compatibility).
+RUN git clone https://github.com/cupen/protoactor-go -b master --depth=1
+RUN export GOPROXY=${goproxy} \
+    && export GOPATH=/gopath/ \
+    && cd ./protoactor-go/protobuf/protoc-gen-gograinv2 \
+    && mkdir -p /root/go/bin/ \
+    && go install . \
+    && go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2
+
+
 # install protoc
 RUN apt-get update
 RUN apt-get install unzip
@@ -16,16 +27,6 @@ RUN export GOPROXY=${goproxy} \
     && export GOPATH=/gopath/ \
     && mkdir /gopath/ \
     && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-
-
-# install go code generator(compatibility).
-RUN git clone https://github.com/cupen/protoactor-go -b master --depth=1
-RUN export GOPROXY=${goproxy} \
-    && export GOPATH=/gopath/ \
-    && cd ./protoactor-go/protobuf/protoc-gen-gograinv2 \
-    && mkdir -p /root/go/bin/ \
-    && make install \
-    && go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2
 
 
 
