@@ -28,7 +28,6 @@ start:
 	tmux select-pane -t "dp:0.1"
 	tmux send-keys -t "dp:0.0" "make serve-mirror" Enter
 	tmux send-keys -t "dp:0.1" "make build-with-mirror" Enter
-	# tmux send-keys -t "eg:0.2" "go run member/main.go" Enter
 	tmux attach -t dp
 	tmux kill-session -t dp
 
