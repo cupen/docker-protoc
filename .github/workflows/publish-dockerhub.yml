@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - 'master'
+      - 'v*'
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       image_tag:
@@ -26,15 +29,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push(git push)
-        uses: docker/build-push-action@v2
+      - name: Build and publish(push) with tags:[latest, ${{ github.ref_name }}]
+        uses: docker/build-push-action@v3
         with:
           push: true
-          tags: cupen/protoc:latest
+          tags: cupen/protoc:latest, cupen/protoc:${{ github.ref_name }}
         if: github.event_name == 'push'
 
-      - name: Build and push(manual)
-        uses: docker/build-push-action@v2
+      - name: Build and publish(manual) with tags:[${{ github.event.inputs.image_tag }}]
+        uses: docker/build-push-action@v3
         with:
           push: true
           tags: cupen/protoc:${{ github.event.inputs.image_tag }}
