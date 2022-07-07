@@ -1,6 +1,6 @@
 FROM golang:1.18.3-bullseye AS build
 
-ARG protoc_version=3.19.4
+ARG protoc_version=3.17.3
 ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
 ARG goproxy=direct
 
@@ -40,8 +40,8 @@ ADD https://raw.githubusercontent.com/asynkron/protoactor-go/dev/remote/remote.p
 
 # install third-party protos (compatibility)
 ADD https://raw.githubusercontent.com/asynkron/protoactor-go/dev/actor/actor.proto    /usr/include/github.com/AsynkronIT/protoactor-go/actor/actor.proto
+ADD https://raw.githubusercontent.com/asynkron/protoactor-go/dev/actor/actor.proto    /usr/include/github.com/AsynkronIT/protoactor-go/actor/protos.proto
 ADD https://raw.githubusercontent.com/asynkron/protoactor-go/dev/remote/remote.proto  /usr/include/github.com/AsunkronIT/protoactor-go/remote/remote.proto
 ADD https://raw.githubusercontent.com/gogo/protobuf/v1.3.2/gogoproto/gogo.proto       /usr/include/github.com/gogo/protobuf/gogoproto/gogo.proto
-
 
 ENTRYPOINT ["/usr/bin/protoc", "-I=/usr/include"] 
