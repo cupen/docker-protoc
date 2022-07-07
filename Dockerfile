@@ -1,38 +1,33 @@
-FROM golang:1.18.3-bullseye AS build
+FROM golang:1.18.3-bullseye AS plugin
 
 ARG protoc_version=3.17.3
 ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
 ARG goproxy=direct
 
+ENV GOPROXY=${goproxy}
+ENV GOPATH=/gopath/
 
 # install go code generator(compatibility).
-RUN git clone https://github.com/cupen/protoactor-go -b master --depth=1
-RUN export GOPROXY=${goproxy} \
-    && export GOPATH=/gopath/ \
-    && cd ./protoactor-go/protobuf/protoc-gen-gograinv2 \
-    && mkdir -p /root/go/bin/ \
-    && go install . \
-    && go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2
-
-
-# install protoc
-RUN apt-get update
-RUN apt-get install unzip
-ADD ${protoc_url} /protoc_bin/protoc.zip
-RUN cd /protoc_bin/ && unzip protoc.zip && rm protoc.zip
-
-# install go code generator.
 # https://developers.google.com/protocol-buffers/docs/reference/go/faq
-RUN export GOPROXY=${goproxy} \
-    && export GOPATH=/gopath/ \
-    && mkdir /gopath/ \
+RUN git clone https://github.com/cupen/protoactor-go -b master --depth=1 \
+    && cd ./protoactor-go/protobuf/protoc-gen-gograinv2 \
+    && go install . \
+    && go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.2 \
     && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 
+FROM python:3.9-slim-bullseye AS protoc
+ARG protoc_version=3.17.3
+ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
 
-FROM debian:buster-slim AS runtime
-COPY --from=build /protoc_bin/         /usr/
-COPY --from=build /gopath/bin/protoc-gen-* /usr/bin/
+ADD ${protoc_url} /protoc_bin/protoc.zip
+RUN ls -ahl /protoc_bin/protoc.zip
+RUN python -c "import zipfile; zf = zipfile.ZipFile('/protoc_bin/protoc.zip', 'r'); zf.extractall('/protoc_bin/'); zf.close()" \
+    && chmod -R 755 /protoc_bin/
+
+FROM debian:bullseye-slim AS runtime
+COPY --from=protoc /protoc_bin/             /usr/
+COPY --from=plugin /gopath/bin/protoc-gen-* /usr/bin/
 
 
 # install third-party protos
