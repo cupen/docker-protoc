@@ -1,4 +1,4 @@
-protoc_version:=3.19.4
+protoc_version:=3.19.6
 protoc_image_tag:=$(protoc_version)-$(shell date +'%Y%m%d')
 protoc_url:=https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-linux-x86_64.zip
 protoc_url_cache:=http://127.0.0.1:9527/protoc-$(protoc_version)-linux-x86_64.zip

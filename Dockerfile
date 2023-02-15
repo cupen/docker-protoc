@@ -1,6 +1,6 @@
-FROM golang:1.18.3-bullseye AS plugin
+FROM golang:1.20.1-bullseye AS plugin
 
-ARG protoc_version=3.17.3
+ARG protoc_version=3.19.6
 ARG protoc_url=https://github.com/protocolbuffers/protobuf/releases/download/v${protoc_version}/protoc-${protoc_version}-linux-x86_64.zip
 ARG goproxy=direct
 
